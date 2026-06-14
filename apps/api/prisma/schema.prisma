@@ -15,8 +15,8 @@ model Product {
   stock       Int
   imageUrl    String?
   createdAt   DateTime @default(now())
-
   cartItems CartItem[]
+  orderItems OrderItem[]
 }
 
 model Order {
@@ -33,6 +33,7 @@ model OrderItem {
   id        String  @id @default(uuid())
   order     Order   @relation(fields: [orderId], references: [id])
   orderId   String
+  product   Product @relation(fields: [productId], references: [id])
   productId String
   quantity  Int
   price     Float
