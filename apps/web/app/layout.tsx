@@ -7,9 +7,12 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 import { JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
+import Navbar from "@/components/navbar/navbar";
 
-const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
-
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export default function RootLayout({
   children,
@@ -19,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={cn("font-mono", jetbrainsMono.variable)}>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <Navbar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
