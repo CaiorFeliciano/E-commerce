@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { login } from '@/lib/api';
+import { register } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,26 +16,33 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login: setAuthToken } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     setError('');
+
+    if (password !== confirmPassword) {
+      setError('As senhas precisam ser iguais');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const { access_token } = await login(email, password);
-      setAuthToken(access_token);
+      const { access_token } = await register(email, password);
+      login(access_token);
       router.push('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Email ou senha inválidos');
+      setError(err instanceof Error ? err.message : 'Não foi possível cadastrar');
     } finally {
       setLoading(false);
     }
@@ -46,21 +53,20 @@ export default function LoginPage() {
       <div className="grid w-full gap-6 lg:grid-cols-[1fr_420px]">
         <section className="space-y-4 border border-border/70 bg-card p-8">
           <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">
-            Login
+            Cadastro
           </p>
           <h1 className="text-3xl font-semibold tracking-tight">
-            Entre para testar o fluxo completo do e-commerce.
+            Crie uma conta para testar carrinho, checkout e pedidos.
           </h1>
           <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-            Faça login para adicionar produtos ao carrinho, finalizar compras e
-            acompanhar seus pedidos. Usuários administradores também podem gerenciar o catálogo.
+            O cadastro já autentica o usuário para seguir direto para o catálogo e iniciar a jornada de compra.
           </p>
         </section>
 
         <Card className="border border-border/70 bg-card">
           <CardHeader>
-            <CardTitle>Entrar</CardTitle>
-            <CardDescription>Acesse sua conta para continuar</CardDescription>
+            <CardTitle>Criar conta</CardTitle>
+            <CardDescription>Use um email válido e senha com 8 caracteres ou mais</CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -88,16 +94,28 @@ export default function LoginPage() {
                 />
               </div>
 
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="confirmPassword">Confirmar senha</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  required
+                  minLength={8}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+
               {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
               <Button type="submit" disabled={loading} className="w-full">
-                {loading ? 'Entrando...' : 'Entrar'}
+                {loading ? 'Criando conta...' : 'Criar conta'}
               </Button>
 
               <p className="text-xs text-muted-foreground">
-                Ainda não tem conta?{' '}
-                <Link href="/register" className="underline underline-offset-4">
-                  Cadastre-se
+                Já possui conta?{' '}
+                <Link href="/login" className="underline underline-offset-4">
+                  Entrar
                 </Link>
               </p>
             </form>
