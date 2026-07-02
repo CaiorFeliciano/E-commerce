@@ -1,48 +1,51 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Delete,
   Body,
+  Controller,
+  Delete,
+  Get,
   Param,
+  Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CartService } from './cart.service';
 import { JwtGuard } from '../auth/jwt.guard';
-import { Request } from 'express';
-
-class AddItemDto {
-  productId: string;
-  quantity: number;
-}
+import { AuthenticatedRequest } from '../auth/auth.types';
+import { AddCartItemDto } from './dto/add-cart-item.dto';
+import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { CartService } from './cart.service';
 
 @Controller('cart')
 @UseGuards(JwtGuard)
 export class CartController {
-  constructor(private cartService: CartService) {}
+  constructor(private readonly cartService: CartService) {}
 
   @Get()
-  getCart(@Req() req: Request) {
-    const userId = (req['user'] as any).sub;
-    return this.cartService.getCart(userId);
+  getCart(@Req() req: AuthenticatedRequest) {
+    return this.cartService.getCart(req.user.sub);
   }
 
   @Post('items')
-  addItem(@Req() req: Request, @Body() body: AddItemDto) {
-    const userId = (req['user'] as any).sub;
-    return this.cartService.addItem(userId, body.productId, body.quantity);
+  addItem(@Req() req: AuthenticatedRequest, @Body() body: AddCartItemDto) {
+    return this.cartService.addItem(req.user.sub, body.productId, body.quantity);
+  }
+
+  @Put('items/:id')
+  updateItem(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body() body: UpdateCartItemDto,
+  ) {
+    return this.cartService.updateItem(req.user.sub, id, body.quantity);
   }
 
   @Delete('items/:id')
-  removeItem(@Req() req: Request, @Param('id') id: string) {
-    const userId = (req['user'] as any).sub;
-    return this.cartService.removeItem(userId, id);
+  removeItem(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.cartService.removeItem(req.user.sub, id);
   }
 
   @Delete()
-  clearCart(@Req() req: Request) {
-    const userId = (req['user'] as any).sub;
-    return this.cartService.clearCart(userId);
+  clearCart(@Req() req: AuthenticatedRequest) {
+    return this.cartService.clearCart(req.user.sub);
   }
 }

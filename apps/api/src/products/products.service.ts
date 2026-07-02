@@ -1,25 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-
-export class CreateProductDto {
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  imageUrl: string;
-}
-
-export class UpdateProductDto {
-  name?: string;
-  description?: string;
-  price?: number;
-  stock?: number;
-  imageUrl?: string;
-}
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
     return this.prisma.product.findMany({

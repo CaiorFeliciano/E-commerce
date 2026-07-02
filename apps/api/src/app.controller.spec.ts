@@ -15,8 +15,12 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return API overview', () => {
+      expect(appController.getOverview()).toEqual({
+        name: 'E-commerce API',
+        status: 'ok',
+        modules: ['auth', 'products', 'cart', 'orders'],
+      });
     });
   });
 });

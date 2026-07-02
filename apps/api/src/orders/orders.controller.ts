@@ -1,28 +1,25 @@
-import { Controller, Get, Post, Param, Req, UseGuards } from '@nestjs/common';
-import { OrdersService } from './orders.service';
+import { Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtGuard } from '../auth/jwt.guard';
-import { Request } from 'express';
+import { AuthenticatedRequest } from '../auth/auth.types';
+import { OrdersService } from './orders.service';
 
 @Controller('orders')
 @UseGuards(JwtGuard)
 export class OrdersController {
-  constructor(private ordersService: OrdersService) {}
+  constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  create(@Req() req: Request) {
-    const userId = (req['user'] as any).sub;
-    return this.ordersService.create(userId);
+  create(@Req() req: AuthenticatedRequest) {
+    return this.ordersService.create(req.user.sub);
   }
 
   @Get()
-  findAll(@Req() req: Request) {
-    const userId = (req['user'] as any).sub;
-    return this.ordersService.findAllByUser(userId);
+  findAll(@Req() req: AuthenticatedRequest) {
+    return this.ordersService.findAllByUser(req.user.sub);
   }
 
   @Get(':id')
-  findOne(@Req() req: Request, @Param('id') id: string) {
-    const userId = (req['user'] as any).sub;
-    return this.ordersService.findOne(userId, id);
+  findOne(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.ordersService.findOne(req.user.sub, id);
   }
 }

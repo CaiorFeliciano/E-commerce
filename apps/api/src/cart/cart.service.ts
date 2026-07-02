@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CartService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async getCart(userId: string) {
     let cart = await this.prisma.cart.findUnique({
@@ -11,6 +15,7 @@ export class CartService {
       include: {
         items: {
           include: { product: true },
+          orderBy: { id: 'asc' },
         },
       },
     });
@@ -40,20 +45,53 @@ export class CartService {
       throw new NotFoundException('Produto não encontrado');
     }
 
+    if (product.stock < 1) {
+      throw new BadRequestException('Produto sem estoque disponível');
+    }
+
     const existingItem = await this.prisma.cartItem.findFirst({
       where: { cartId: cart.id, productId },
     });
 
+    const nextQuantity = (existingItem?.quantity ?? 0) + quantity;
+
+    if (nextQuantity > product.stock) {
+      throw new BadRequestException('Quantidade indisponível em estoque');
+    }
+
     if (existingItem) {
       return this.prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + quantity },
+        data: { quantity: nextQuantity },
         include: { product: true },
       });
     }
 
     return this.prisma.cartItem.create({
       data: { cartId: cart.id, productId, quantity },
+      include: { product: true },
+    });
+  }
+
+  async updateItem(userId: string, itemId: string, quantity: number) {
+    const cart = await this.getCart(userId);
+
+    const item = await this.prisma.cartItem.findFirst({
+      where: { id: itemId, cartId: cart.id },
+      include: { product: true },
+    });
+
+    if (!item) {
+      throw new NotFoundException('Item não encontrado no carrinho');
+    }
+
+    if (quantity > item.product.stock) {
+      throw new BadRequestException('Quantidade indisponível em estoque');
+    }
+
+    return this.prisma.cartItem.update({
+      where: { id: itemId },
+      data: { quantity },
       include: { product: true },
     });
   }
