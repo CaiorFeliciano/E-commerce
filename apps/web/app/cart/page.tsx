@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,14 +24,16 @@ export default function CartPage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  async function loadCart() {
+  const loadCart = useCallback(async (showLoader = true) => {
     if (!token) {
       setCart(null);
       setLoading(false);
       return;
     }
 
-    setLoading(true);
+    if (showLoader) {
+      setLoading(true);
+    }
 
     try {
       const data = await getCart(token);
@@ -42,12 +44,17 @@ export default function CartPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token]);
 
   useEffect(() => {
     if (!isReady) return;
-    void loadCart();
-  }, [isReady, token]);
+
+    const timeoutId = window.setTimeout(() => {
+      void loadCart(false);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isReady, loadCart]);
 
   const total = useMemo(
     () =>

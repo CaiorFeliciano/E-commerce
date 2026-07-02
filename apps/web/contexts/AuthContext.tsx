@@ -45,14 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('token');
+    const timeoutId = window.setTimeout(() => {
+      const stored = localStorage.getItem('token');
 
-    if (stored) {
-      setToken(stored);
-      setUser(parseToken(stored));
-    }
+      if (stored) {
+        setToken(stored);
+        setUser(parseToken(stored));
+      }
 
-    setIsReady(true);
+      setIsReady(true);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   function login(newToken: string) {

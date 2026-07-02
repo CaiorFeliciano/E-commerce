@@ -1,14 +1,7 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/contexts/AuthContext';
 import Navbar from '@/components/navbar/navbar';
-import { cn } from '@/lib/utils';
 import './globals.css';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
 
 export const metadata: Metadata = {
   title: 'Caio Store',
@@ -22,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={cn(inter.variable)}>
+    <html lang="pt-BR">
       <body className="min-h-screen bg-background text-foreground antialiased">
         <AuthProvider>
           <div className="flex min-h-screen flex-col">

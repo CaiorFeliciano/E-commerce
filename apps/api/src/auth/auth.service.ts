@@ -8,7 +8,7 @@ import { Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { UsersService } from '../users/users.service';
 
-interface AuthResponse {
+export interface AuthResponse {
   access_token: string;
   user: {
     id: string;

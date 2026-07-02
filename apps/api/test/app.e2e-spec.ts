@@ -18,10 +18,13 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer()).get('/').expect(200).expect({
-      name: 'E-commerce API',
-      status: 'ok',
-      modules: ['auth', 'products', 'cart', 'orders'],
-    });
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect({
+        name: 'E-commerce API',
+        status: 'ok',
+        modules: ['auth', 'products', 'cart', 'orders'],
+      });
   });
 });

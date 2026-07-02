@@ -19,7 +19,9 @@ describe('OrdersService', () => {
   };
 
   const prisma = {
-    $transaction: jest.fn((callback: (client: typeof tx) => unknown) => callback(tx)),
+    $transaction: jest.fn((callback: (client: typeof tx) => unknown) =>
+      callback(tx),
+    ),
     order: {
       findMany: jest.fn(),
       findFirst: jest.fn(),

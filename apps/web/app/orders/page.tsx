@@ -14,14 +14,16 @@ export default function OrdersPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    async function loadOrders() {
+    async function loadOrders(showLoader = true) {
       if (!token) {
         setOrders([]);
         setLoading(false);
         return;
       }
 
-      setLoading(true);
+      if (showLoader) {
+        setLoading(true);
+      }
 
       try {
         const data = await getOrders(token);
@@ -35,7 +37,11 @@ export default function OrdersPage() {
     }
 
     if (isReady) {
-      void loadOrders();
+      const timeoutId = window.setTimeout(() => {
+        void loadOrders(false);
+      }, 0);
+
+      return () => window.clearTimeout(timeoutId);
     }
   }, [isReady, token]);
 

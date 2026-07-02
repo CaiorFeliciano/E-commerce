@@ -34,9 +34,9 @@ describe('CartService', () => {
       quantity: 1,
     });
 
-    await expect(service.addItem('user-1', 'product-1', 2)).rejects.toBeInstanceOf(
-      BadRequestException,
-    );
+    await expect(
+      service.addItem('user-1', 'product-1', 2),
+    ).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it('should update item quantity when item already exists', async () => {
@@ -58,8 +58,8 @@ describe('CartService', () => {
     prisma.cart.findUnique.mockResolvedValue({ id: 'cart-1', items: [] });
     prisma.cartItem.findFirst.mockResolvedValue(null);
 
-    await expect(service.updateItem('user-1', 'item-1', 1)).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+    await expect(
+      service.updateItem('user-1', 'item-1', 1),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

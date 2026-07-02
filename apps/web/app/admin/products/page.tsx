@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -42,8 +42,10 @@ export default function AdminProductsPage() {
 
   const isAdmin = user?.role === 'ADMIN';
 
-  async function loadProducts() {
-    setLoading(true);
+  const loadProducts = useCallback(async (showLoader = true) => {
+    if (showLoader) {
+      setLoading(true);
+    }
 
     try {
       const data = await getProducts();
@@ -54,11 +56,15 @@ export default function AdminProductsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    void loadProducts();
-  }, []);
+    const timeoutId = window.setTimeout(() => {
+      void loadProducts(false);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [loadProducts]);
 
   const submitLabel = useMemo(
     () => (editingId ? 'Salvar alterações' : 'Cadastrar produto'),
