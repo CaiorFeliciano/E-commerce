@@ -3,8 +3,8 @@
 Monorepo com front-end e back-end de um e-commerce usado como projeto de portfólio.
 
 ## Estrutura
-- `/home/runner/work/E-commerce/E-commerce/apps/web` — aplicação Next.js
-- `/home/runner/work/E-commerce/E-commerce/apps/api` — API NestJS + Prisma
+- `apps/web` — aplicação Next.js
+- `apps/api` — API NestJS + Prisma
 
 ## O que já está implementado
 - autenticação com JWT
@@ -17,7 +17,7 @@ Monorepo com front-end e back-end de um e-commerce usado como projeto de portfó
 ## Como rodar
 ### API
 ```bash
-cd /home/runner/work/E-commerce/E-commerce/apps/api
+cd apps/api
 npm install
 cp .env.example .env
 npm run start:dev
@@ -25,7 +25,7 @@ npm run start:dev
 
 ### Web
 ```bash
-cd /home/runner/work/E-commerce/E-commerce/apps/web
+cd apps/web
 npm install
 printf 'NEXT_PUBLIC_API_URL=http://localhost:3001\n' > .env.local
 npm run dev

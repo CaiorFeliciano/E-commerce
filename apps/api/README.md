@@ -11,7 +11,7 @@ API em NestJS para autenticação, catálogo, carrinho e pedidos.
    ```bash
    npm install
    ```
-2. Copie `/home/runner/work/E-commerce/E-commerce/apps/api/.env.example` para `.env`.
+2. Copie `.env.example` para `.env`.
 3. Ajuste `DATABASE_URL`, `JWT_SECRET`, `PORT` e `WEB_URL`.
 4. Execute as migrations do Prisma.
 

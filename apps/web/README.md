@@ -29,3 +29,5 @@ Front-end em Next.js para o catálogo, autenticação, carrinho, pedidos e paine
 - `npm run dev`
 - `npm run build`
 - `npm run lint`
+
+Adicione `NEXT_PUBLIC_IMAGE_HOSTS` com uma lista separada por vírgula dos domínios HTTPS permitidos para imagens remotas.

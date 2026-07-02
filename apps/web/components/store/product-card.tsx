@@ -21,7 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             fill
             className="object-cover"
-            unoptimized
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
@@ -36,9 +36,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <CardContent className="flex flex-1 flex-col gap-3 pt-4">
         <div className="space-y-2">
           <h2 className="text-sm font-semibold text-foreground">{product.name}</h2>
-          <p className="line-clamp-3 text-xs text-muted-foreground">
-            {product.description}
-          </p>
+          <p className="line-clamp-3 text-xs text-muted-foreground">{product.description}</p>
         </div>
 
         <div className="mt-auto flex items-end justify-between gap-3">
@@ -61,11 +59,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </CardContent>
 
       <CardFooter className="border-t border-border/70">
-        <AddToCartButton
-          productId={product.id}
-          disabled={isOutOfStock}
-          fullWidth
-        />
+        <AddToCartButton productId={product.id} disabled={isOutOfStock} fullWidth />
       </CardFooter>
     </Card>
   );
