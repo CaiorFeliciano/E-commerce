@@ -7,5 +7,7 @@ export function getJwtSecret() {
     return 'test-secret';
   }
 
-  throw new Error('JWT_SECRET environment variable is required');
+  throw new Error(
+    'JWT_SECRET environment variable is required. Configure it in your .env file or deployment environment.',
+  );
 }
